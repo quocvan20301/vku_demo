@@ -1,0 +1,26 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.main-bieu-mau .main-bieu-mau-left .bieu-mau ul li {
+	width: 100%;
+	height: auto;
+	padding-bottom: 10px;
+	list-style: none;
+}
+
+.main-bieu-mau .main-bieu-mau-left .bieu-mau ul li p {
+	display: inline-block;
+	padding-right: 5%;
+	text-align: justify;
+}
+
+.main-bieu-mau .main-bieu-mau-left .bieu-mau ul li .name-bm {
+	width: 15%;
+}
+
+.main-bieu-mau .main-bieu-mau-left .bieu-mau ul li p i {
+	font-size: 25px;
+	color: #189a2e;
+}

@@ -1,0 +1,196 @@
+@import url(https://fonts.googleapis.com/css?family=Oswald:300,400,700|Open+Sans:400,700,600);
+* {
+	margin: 0;
+	padding: 0;
+}
+
+pre {
+	font-family: 'Oswald', Arial, Helvetica, sans-serif;
+}
+ 
+body {
+	font-family: 'Oswald', Arial, Helvetica, sans-serif;
+}
+
+a {
+	text-decoration: none;
+}
+
+.xem-de-cuong {
+	margin-bottom: 80px;
+}
+
+.xem-de-cuong .tieu-de {
+	text-align: center;
+	text-transform: uppercase;
+	padding-top: 20px;
+}
+
+.xem-de-cuong .ten-hoc-phan {
+	text-align: center;
+}
+
+.xem-de-cuong .table-top {
+	width: 100%;
+}
+
+.xem-de-cuong .table-top .row-1 {
+	width: 50%;
+	font-weight: bold;
+	padding: 5px 5px;
+}
+
+.xem-de-cuong .table-top .row-2 {
+	width: 50%;
+	padding: 5px 5px;
+	padding-left: 10px;
+}
+
+li {
+	list-style: none;
+}
+
+.xem-de-cuong .check-box {
+	padding-right: 5px;
+}
+
+.xem-de-cuong .right-check-box {
+	display: inline-grid;
+	padding-left: 3px;
+}
+
+.xem-de-cuong .cate {
+	font-weight: bold;
+}
+
+.xem-de-cuong .block-2 {
+	padding-top: 15px;
+}
+
+.xem-de-cuong .ctdt {
+	text-transform: uppercase;
+	text-align: center;
+	font-size: 20px;
+	clear: both;
+}
+
+.xem-de-cuong .line-ngang {
+	width: 100%;
+	height: auto;
+	margin-top: -10px;
+}
+
+.xem-de-cuong .line-ngang p {
+	display: inline-block;
+}
+
+.xem-de-cuong .line-ngang .bl-line-1 {
+	padding-right: 10px;
+}
+
+.xem-de-cuong .line-ngang .ms {
+	float: right;
+}
+
+.xem-de-cuong .line-top {
+	width: 100%;
+	height: auto;
+	margin-top: 70px;
+	margin-bottom: 40px;
+}
+
+.xem-de-cuong .line-top .line-top-left {
+	width: 45%;
+	height: auto;
+	float: left;
+}
+
+.xem-de-cuong .line-top .line-top-right {
+	width: 55%;
+	height: auto;
+	float: left;
+}
+
+.xem-de-cuong .line-top .line-top-left p {
+	text-align: center;
+	font-size: 18px;
+}
+
+.xem-de-cuong .line-top .line-top-right p {
+	text-align: center;
+	font-size: 18px;
+}
+
+.xem-de-cuong .line-top .line-top-right hr {
+	width: 30%;
+	margin: auto;
+	margin-top: -12px;
+	background: #000;
+}
+
+.xem-de-cuong .content {
+	margin-top: -15px;
+	text-align: justify;
+}
+
+.xem-de-cuong .table-cdr {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.xem-de-cuong .table-cdr thead tr td {
+	text-align: center;
+	font-weight: 700;
+	padding: 5px 0px;
+}
+
+.xem-de-cuong .table-cdr .row-stt {
+	text-align: center;
+	padding: 5px 5px;
+}
+
+.xem-de-cuong .table-cdr tbody tr .row-cdr {
+	padding: 5px 7px;
+	text-align: justify;
+}
+
+.xem-de-cuong .table-danh-gia-hoc-phan {
+	width: 100%;
+}
+
+.xem-de-cuong .table-danh-gia-hoc-phan thead {
+	text-align: center;
+	
+}
+
+.xem-de-cuong .table-danh-gia-hoc-phan td {
+	padding: 5px 0px 5px 5px;
+}
+
+.xem-de-cuong .table-danh-gia-hoc-phan td p {
+	display: inline-block;
+}
+
+.xem-de-cuong .table-danh-gia-hoc-phan td p.left-bdg {
+	color: #888;
+	padding-right: 5px;
+}
+
+.xem-de-cuong .table-ke-hoach-giang-day {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.xem-de-cuong .table-ke-hoach-giang-day thead {
+	text-align: center;
+}
+
+.xem-de-cuong .table-ke-hoach-giang-day td {
+	padding: 5px 0px 5px 5px;
+}
+
+.xem-de-cuong .table-ke-hoach-giang-day .row-stt-khgd {
+	text-align: center;
+	width: 8%;
+	padding: 0;
+}

@@ -1,0 +1,51 @@
+* {
+	margin: 0px;
+	padding: 0px;
+}
+ 
+.main-thong-tin-thong-bao {
+	width: 100%;
+	height: auto;
+}
+
+.main-thong-tin-thong-bao .top-main-thong-tin-thong-bao {
+	width: 100%;
+	height: auto;
+}
+
+.main-thong-tin-thong-bao .top-main-thong-tin-thong-bao .title-tmgt {
+	margin-left: 10%;
+}
+
+.main-thong-tin-thong-bao .top-main-thong-tin-thong-bao .title-tmgt ul {
+	padding-top: 15px;
+	padding-bottom: 40px;
+}
+
+.main-thong-tin-thong-bao .top-main-thong-tin-thong-bao .title-tmgt ul li {
+	display: inline-block;
+	padding-right: 5px;
+}
+
+.main-thong-tin-thong-bao .main-thong-tin-thong-bao-left {
+	width: 67%;
+	height: auto;
+	float: left;
+	margin-bottom: 70px;
+}
+
+.main-thong-tin-thong-bao .main-thong-tin-thong-bao-left .block-1 {
+	width: 80%;
+	height: auto;
+	margin-left: 15%;
+	background: red;
+}
+
+
+.main-thong-tin-thong-bao .main-thong-tin-thong-bao-right {
+	width: 25%;
+	height: auto;
+	float: left;
+	margin-bottom: 50px;
+}
+

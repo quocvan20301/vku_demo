@@ -1,0 +1,114 @@
+.edmenu {
+	margin-top: 30px;
+	margin-left: 5%;
+}
+.edmenu > ul > li {
+	width: 40%;
+	height: auto;
+	border-bottom: 1px solid #ccc;
+	list-style: none;
+	clear: left;
+	margin-bottom: 10px;
+	position: relative;
+}
+
+.edmenu > ul > li > input {
+	display: inline-block;
+	width: 50%;
+	height: 30px;
+	font-size: 15px;
+	padding-left: 5px;
+	margin-bottom: 10px;
+	outline: none;
+	border: none;
+	border: 1px solid #ccc;
+	border-radius: 3px;
+
+}
+
+.edmenu > ul > li > #deleteele {
+	display: inline-block;
+	padding-left: 7px;
+}
+
+.edmenu > ul > li h4 {
+	display: inline-block;
+	padding-left: 7px;	
+	display: none;
+}
+
+.edmenu > ul > li #editele {
+	display: inline-block;
+	padding-left: 7px;	
+}
+
+.edmenu > ul > li > #addChild {
+	display: inline-block;
+	padding-left: 7px;
+}
+
+.edmenu > ul > li > ul {
+	width: 25%;
+	margin-left: 10%;
+	margin-bottom: 7px;
+}
+
+.edmenu > ul > li > ul > li {
+	width: 400px;
+	height: auto;
+	list-style: none;
+	position: relative;
+	margin-bottom: 5px;
+}
+
+.edmenu > ul > li > ul > li input {
+	width: 30%;
+	height: 25px;
+	font-size: 14px;
+	padding-left: 5px;
+}
+
+.edmenu > ul > li > ul > li #delechild {
+	display: inline-block;
+	padding-left: 5px;
+}
+
+.edmenu > ul > li > ul > li #addchidele {
+	position: absolute;
+	top: 0;
+	left: 40%;
+}
+
+
+.edmenu > ul > ul {
+	width: 400px;
+	margin-left: 50px;
+}
+
+.edmenu > ul > ul > li {
+	list-style: none;
+	position: relative;
+	clear: left;
+}
+
+.edmenu > ul > ul > li > input {
+	float: left;
+}
+
+.edmenu > ul > ul > li > h3 {
+	float: left;
+	padding-left: 10px;
+}
+
+.addParent {
+	width: 120px;
+	height: 30px;
+	margin-left: 5%;
+	margin-bottom: 70px;
+	border: 1px solid rgba(246,78,96,.1);
+	text-align: center;
+	line-height: 27px;
+	color: #f64e60;
+	background: rgba(246,78,96,.1);
+	border-radius: 3px;
+}

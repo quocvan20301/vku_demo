@@ -1,0 +1,28 @@
+.chuan-dau-ra {
+	width: 70%;
+	margin: 0px auto;
+}
+
+.chuan-dau-ra > h3 {
+	text-transform: uppercase;
+	text-align: center;
+	padding: 20px 20px;
+}
+
+.chuan-dau-ra table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.chuan-dau-ra table thead tr td {
+	text-align: center;
+}
+
+.chuan-dau-ra table tbody tr td {
+	font-size: 14px;
+	padding-left: 5px;
+}
+
+.chuan-dau-ra table tbody tr .stt_cdr {
+	padding: 5px 7px;
+}
