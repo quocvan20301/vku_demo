@@ -18,7 +18,7 @@
 			<td>Sửa</td>
 			<td>Xoá</td>
 		</tr>
-	</thead>
+	</thead> 
 
 	<tbody>
 		<?php $stt_dsdc = 1; ?>
@@ -29,20 +29,20 @@
 			<td>{{$value_decuong->hodem}} {{$value_decuong->ten}}</td>
 			@if($value_decuong->has_dghp == 0)
 			<td>
-				<a href="{{URL::to('danh-gia-hoc-phan/'.$value_decuong->id_decuong)}}">Thêm đánh giá học phần</a>
+				<a href="{{URL::to('danh-gia-hoc-phan/'.$value_decuong->id_decuong)}}" class="add-dsdc">Thêm đánh giá học phần</a>
 			</td>
 			@else
 			<td>
-				<a href="{{URL::to('edit-danh-gia-hoc-phan/'.$value_decuong->id_decuong)}}">Sửa đánh giá học phần</a>
+				<a href="{{URL::to('edit-danh-gia-hoc-phan/'.$value_decuong->id_decuong)}}" class="edit-dsdc">Sửa đánh giá học phần</a>
 			</td>
 			@endif
 			@if($value_decuong->has_khgd == 0)
 			<td>
-				<a href="{{URL::to('ke-hoach-giang-day/'.$value_decuong->id_decuong)}}" >Thêm Kế hoạch giảng dạy và học</a>
+				<a href="{{URL::to('ke-hoach-giang-day/'.$value_decuong->id_decuong)}}" class="add-dsdc">Thêm Kế hoạch giảng dạy và học</a>
 			</td> 
 			@else
 			<td>
-				<a href="{{URL::to('edit-ke-hoach-giang-day/'.$value_decuong->id_decuong)}}" >Sửa Kế hoạch giảng dạy và học</a>
+				<a href="{{URL::to('edit-ke-hoach-giang-day/'.$value_decuong->id_decuong)}}" class="edit-dsdc">Sửa Kế hoạch giảng dạy và học</a>
 			</td>
 			@endif
 			<td class="list-icon l-icon-views">

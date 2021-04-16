@@ -14,6 +14,8 @@
 	<script src="https://cdn.tiny.cloud/1/gs0pa5cuczbr5b24pvedu0twwply9bryqr1lal4ncmjdtkfm/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
 
+	<link rel="stylesheet" type="text/css" href="{{ asset('./public/Css/bootstrap.min.css')}}">
+
 </head>
 <body>
 	

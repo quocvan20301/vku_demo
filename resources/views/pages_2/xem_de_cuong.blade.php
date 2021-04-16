@@ -200,8 +200,9 @@
 
 					</p>
 
+					@if(isset($all_dghp) && $all_dghp != null)
 					<p class="cate">12.	Đánh giá học phần: </p>
-					<p class="content">Kết quả học tập của sinh viênđược đánh giá bằng các thành phần: đánh giá quá trình, đánh giá giữa kỳ, đánh giá cuối kỳ, các hoạt động đánh giá khác. </p>
+					<p class="content">Kết quả học tập của sinh viên được đánh giá bằng các thành phần: đánh giá quá trình, đánh giá giữa kỳ, đánh giá cuối kỳ, các hoạt động đánh giá khác. </p>
 					<table border="1px" cellspacing="0" class="table-danh-gia-hoc-phan">
 						<thead>
 							<tr>
@@ -223,8 +224,18 @@
 											<td><p class="left-bdg">A.<?php echo $stt; ?>.1</p> <p>{{$value_dghp_parent->ten_thanhphandanhgia}}</p></td>
 											<td><p class="left-bdg">P.<?php echo $stt; ?>.1</p> <p>{{$value_dghp_parent->phuongphapdanhgia}}</p></td>
 											<td><p class="left-bdg">W.<?php echo $stt; ?>.1</p> <p>{{$value_dghp_parent->trongsobaidanhgia}} %</p></td>
-											<td rowspan="2"><p class="left-bdg">W.<?php echo $stt; ?></p> <p>{{$value_dghp_parent->trongsothanhphan}} %</p></td>
-											<td><p>{{$value_dghp_parent->cdr_hocphan}}</p></td>
+											<td rowspan="2"><p class="left-bdg">W.<?php echo $stt; ?></p> <p> %</p></td>
+											<td>
+												<p>
+												@foreach($value_dghp_parent->cdr_hocphan as $value_list_cdr)
+													@if (next($value_dghp_parent->cdr_hocphan)==true)
+													CLO {{$value_list_cdr}},
+													@else
+													CLO {{$value_list_cdr}}
+													@endif
+												@endforeach
+												</p>
+											</td>
 										</tr>
 										<?php $a = $stt; ?>
 										<?php $stt++; ?>
@@ -233,7 +244,17 @@
 											<td><p class="left-bdg">A.<?php echo $a; ?>.2</p> <p>{{$value_dghp_parent->ten_thanhphandanhgia}}</p></td>
 											<td><p class="left-bdg">P.<?php echo $a; ?>.2</p> <p>{{$value_dghp_parent->phuongphapdanhgia}}</p></td>
 											<td><p class="left-bdg">W.<?php echo $a; ?>.2 <p></p>{{$value_dghp_parent->trongsobaidanhgia}} %</p></td>
-											<td><p>{{$value_dghp_parent->cdr_hocphan}}</p></td>
+											<td>
+												<p>
+												@foreach($value_dghp_parent->cdr_hocphan as $value_list_cdr)
+													@if (next($value_dghp_parent->cdr_hocphan)==true)
+													CLO {{$value_list_cdr}},
+													@else
+													CLO {{$value_list_cdr}}
+													@endif
+												@endforeach
+												</p>
+											</td>
 										</tr>
 									@endif			
 								@else
@@ -242,15 +263,27 @@
 										<td><p class="left-bdg">A.<?php echo $stt; ?>.1</p> <p>{{$value_dghp_parent->ten_thanhphandanhgia}}</p></td>
 										<td><p class="left-bdg">P.<?php echo $stt; ?>.1</p> <p>{{$value_dghp_parent->phuongphapdanhgia}}</p></td>
 										<td><p class="left-bdg">W.<?php echo $stt; ?>.1</p> <p>{{$value_dghp_parent->trongsobaidanhgia}} %</p></td>
-										<td><p class="left-bdg">W.<?php echo $stt; ?></p> <p>{{$value_dghp_parent->trongsothanhphan}} %</p></td>
-										<td><p>{{$value_dghp_parent->cdr_hocphan}}</p></td>
+										<td><p class="left-bdg">W.<?php echo $stt; ?></p> <p> %</p></td>
+										<td>
+											<p>
+											@foreach($value_dghp_parent->cdr_hocphan as $value_list_cdr)
+												@if (next($value_dghp_parent->cdr_hocphan)==true)
+												CLO {{$value_list_cdr}},
+												@else
+												CLO {{$value_list_cdr}}
+												@endif
+											@endforeach
+											</p>
+										</td>
 									</tr>
 									<?php $stt++; ?>
 								@endif
 							@endforeach
 						</tbody>
 					</table>
+					@endif
 
+					@if(isset($all_kehoachgiangday_lt) && $all_kehoachgiangday_lt != null)
 					<p class="cate">13. Kế hoạch giảng dạy và học: </p>
 					<p class="cate">13.1 Kế hoạch giảng dạy và học cho phần lý thuyết: </p>
 					<table border="1px" cellspacing="0" class="table-ke-hoach-giang-day">
@@ -283,12 +316,22 @@
 									</ul>
 								</td>
 								<td>{{$value_all_khgd_lt->baidanhgia}}</td>
-								<td>{{$value_all_khgd_lt->cdrhocphan}}</td>
+								<td>
+									@foreach($value_all_khgd_lt->cdrhocphan as $value_list_cdr)
+										@if (next($value_all_khgd_lt->cdrhocphan)==true)
+										CLO {{$value_list_cdr}},
+										@else
+										CLO {{$value_list_cdr}}
+										@endif
+									@endforeach
+								</td>
 							</tr>
 							@endforeach
 						</tbody>
 					</table>
+					@endif
 
+					@if(isset($all_kehoachgiangday_th) && $all_kehoachgiangday_th != null)
 					<p class="cate">13.1 Kế hoạch giảng dạy và học cho phần thực hành: </p>
 					<table border="1px" cellspacing="0" class="table-ke-hoach-giang-day">
 						<thead>
@@ -320,11 +363,20 @@
 									</ul>
 								</td>
 								<td>{{$value_all_khgd_th->baidanhgia}}</td>
-								<td>{{$value_all_khgd_th->cdrhocphan}}</td>
+								<td>
+									@foreach($value_all_khgd_th->cdrhocphan as $value_list_cdr)
+										@if (next($value_all_khgd_th->cdrhocphan)==true)
+										CLO {{$value_list_cdr}},
+										@else
+										CLO {{$value_list_cdr}}
+										@endif
+									@endforeach
+								</td>
 							</tr>
 							@endforeach
 						</tbody>
 					</table>
+					@endif
 
 					<p class="cate">14. Tài liệu học tập: </p>
 					<p class="cate">14.1 Sách, bài giảng, giáo trình chính: </p>

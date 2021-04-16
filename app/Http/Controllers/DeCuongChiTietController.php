@@ -11,6 +11,7 @@ use App\Models\chuandauramonhoc;
 use App\Models\danhgiahocphan;
 use App\Models\thanhphandanhgia;
 use App\Models\kehoachgiangday;
+use App\Models\trongsolophocphan;
 use DB;
 use Redirect;
 
@@ -103,6 +104,8 @@ class DeCuongChiTietController extends Controller
 
         foreach($all_decuong as $value_all_decuong) {
 
+            $value_all_decuong->has_dghp = 0;
+
             foreach($danhsach_danhgiahocphan as $value_ds_dghp) {
                 if ($value_ds_dghp->id_hocphan == $value_all_decuong->id_hocphan) {
                     $value_all_decuong->has_dghp = 1;
@@ -111,6 +114,8 @@ class DeCuongChiTietController extends Controller
                     $value_all_decuong->has_dghp = 0;
                 }
             }
+
+            $value_all_decuong->has_khgd = 0;
 
             foreach($danhsach_kehoachgiangday as $value_ds_khgd) {
                 if ($value_ds_khgd->id_hocphan == $value_all_decuong->id_hocphan) {
@@ -286,6 +291,7 @@ class DeCuongChiTietController extends Controller
 
         foreach($all_dghp as $vl_dghp_bdg) {
             $all_baidanhgia[] = $vl_dghp_bdg->id_baidanhgia_parent;
+            $vl_dghp_bdg->cdr_hocphan = explode("_", $vl_dghp_bdg->cdr_hocphan);
         }
 
         $dghp_parent = DB::table('table_thanhphandanhgia')->where('id_baidanhgia', 0)->get();
@@ -341,11 +347,13 @@ class DeCuongChiTietController extends Controller
         foreach($all_kehoachgiangday_lt as $vl_kehoachgiangday_lt) {
             $vl_kehoachgiangday_lt->noidung = $this->xem_decuong_khgd($vl_kehoachgiangday_lt->noidung);
             $vl_kehoachgiangday_lt->hoatdongdayhoc = $this->xem_decuong_khgd($vl_kehoachgiangday_lt->hoatdongdayhoc);
+            $vl_kehoachgiangday_lt->cdrhocphan = explode("_", $vl_kehoachgiangday_lt->cdrhocphan);
         }
 
         foreach($all_kehoachgiangday_th as $vl_kehoachgiangday_th) {
             $vl_kehoachgiangday_th->noidung = $this->xem_decuong_khgd($vl_kehoachgiangday_th->noidung);
             $vl_kehoachgiangday_th->hoatdongdayhoc = $this->xem_decuong_khgd($vl_kehoachgiangday_th->hoatdongdayhoc);
+            $vl_kehoachgiangday_th->cdrhocphan = explode("_", $vl_kehoachgiangday_th->cdrhocphan);
         }
 
         // echo "<pre>";
@@ -377,6 +385,28 @@ class DeCuongChiTietController extends Controller
 
         $all_tpdg_child = DB::table('table_thanhphandanhgia')->where('id_baidanhgia', '!=', 0)->get();
 
+        foreach($all_tpdg_child as $value) {
+            foreach($all_tpdg as $value2) {
+                if($value2->id == $value->id_baidanhgia) {
+                    $value->parent = $value2->ten_thanhphandanhgia;
+                }
+            }
+        }
+
+        $lenght = count($all_tpdg_child);
+
+        for ($i = 0; $i < $lenght; $i ++) {
+            $temp = $all_tpdg_child[$i];
+
+            for ($k = $i + 1; $k < $lenght; $k ++) {
+                if($all_tpdg_child[$k]->id_baidanhgia == $temp->id_baidanhgia) {
+                    $temp->has_child = 1;
+                    $all_tpdg_child[$i+1]->child = 1;
+                    break;
+                } 
+            }
+        }
+
         // echo "<pre>";
         // print_r($all_tpdg_child);
         // die();
@@ -388,43 +418,85 @@ class DeCuongChiTietController extends Controller
     public function insert_danh_gia_hoc_phan($id_decuong, Request $request) {
 
         $trong_so_thanh_phan = $request->trong_so_thanh_phan;
-        $data_dghp = $this->array_2d($request->bai_danh_gia, 5);
+        $data_dghp = $this->array_2d($request->bai_danh_gia, 4);
 
         $decuong_dghp = DB::table('table_decuongchitiet')->select('id_hocphan')->where('id_decuong', $id_decuong)->first();
         $id_hocphan = $decuong_dghp->id_hocphan;
 
-        foreach ($data_dghp as $value_data_dghp) {
-            $danh_gia_hoc_phan = new danhgiahocphan;
-            $danh_gia_hoc_phan->phuongphapdanhgia = $value_data_dghp[1];
-            $danh_gia_hoc_phan->trongsobaidanhgia = $value_data_dghp[2];
-            $danh_gia_hoc_phan->trongsothanhphan = $this->get_trong_so_thanh_phan($value_data_dghp[0], $trong_so_thanh_phan);
-            $danh_gia_hoc_phan->cdr_hocphan = $value_data_dghp[3];
-            $danh_gia_hoc_phan->id_baidanhgia = $value_data_dghp[0];
-            $danh_gia_hoc_phan->id_baidanhgia_parent = $value_data_dghp[4];
-            $danh_gia_hoc_phan->id_hocphan = $id_hocphan;
-            $danh_gia_hoc_phan->save();
+        $chuandaura = $request->chuan_dau_ra;
+
+        $trongsothanhphan1 = $request->trong_so_thanh_phan_1;
+        $trongsothanhphan2 = $request->trong_so_thanh_phan_2;
+        $trongsothanhphan3 = $request->trong_so_thanh_phan_3;
+        $trongsothanhphan4 = $request->trong_so_thanh_phan_4;
+
+        if($trongsothanhphan1 != null) {
+            $trong_so_1 = new trongsolophocphan;
+            $trong_so_1->id_lhp = $id_hocphan;
+            $trong_so_1->id_trongso = 1;
+            $trong_so_1->trongso = $trongsothanhphan1/100;
+            $trong_so_1->trangthai = 0;
+            $trong_so_1->save();
+        }
+
+        if($trongsothanhphan2 != null) {
+            $trong_so_2 = new trongsolophocphan;
+            $trong_so_2->id_lhp = $id_hocphan;
+            $trong_so_2->id_trongso = 2;
+            $trong_so_2->trongso = $trongsothanhphan2/100;
+            $trong_so_2->trangthai = 0;
+            $trong_so_2->save();
+        }
+
+        if($trongsothanhphan3 != null) {
+            $trong_so_3 = new trongsolophocphan;
+            $trong_so_3->id_lhp = $id_hocphan;
+            $trong_so_3->id_trongso = 3;
+            $trong_so_3->trongso = $trongsothanhphan3/100;
+            $trong_so_3->trangthai = 0;
+            $trong_so_3->save();
+        }
+
+        if($trongsothanhphan4 != null) {
+            $trong_so_4 = new trongsolophocphan;
+            $trong_so_4->id_lhp = $id_hocphan;
+            $trong_so_4->id_trongso = 4;
+            $trong_so_4->trongso = $trongsothanhphan4/100;
+            $trong_so_4->trangthai = 0;
+            $trong_so_4->save();
+        }
+
+
+        if($data_dghp != null) {
+            foreach ($data_dghp as $value_data_dghp) {
+                $danh_gia_hoc_phan = new danhgiahocphan;
+                $danh_gia_hoc_phan->phuongphapdanhgia = $value_data_dghp[0];
+                $danh_gia_hoc_phan->trongsobaidanhgia = $value_data_dghp[1];
+                $danh_gia_hoc_phan->id_baidanhgia = $value_data_dghp[3];
+                $danh_gia_hoc_phan->id_baidanhgia_parent = $value_data_dghp[2];
+                $danh_gia_hoc_phan->id_hocphan = $id_hocphan;
+    
+                $cdr_hocphan = "";
+    
+                if(isset($chuandaura) && $chuandaura != null) {
+                    foreach($chuandaura as $value_chuandaura) {
+                        $value_chuandaura = explode("_", $value_chuandaura);
+                     
+                        if((integer)$value_chuandaura[0] == $value_data_dghp[3]) {
+                            $cdr_hocphan .= $value_chuandaura[1]."_";
+                        }
+                    }
+        
+                    $cdr_hocphan = rtrim($cdr_hocphan, '_');
+                }
+    
+                $danh_gia_hoc_phan->cdr_hocphan = $cdr_hocphan;
+    
+                $danh_gia_hoc_phan->save();
+            }
         }
 
         return Redirect::to('/danh-sach-de-cuong');
-    }
-
-    public function get_trong_so_thanh_phan($id_baidanhgia, $array) {
-
-        if($id_baidanhgia == 5) {
-            return $array[0];
-        }
-
-        if($id_baidanhgia == 6 || $id_baidanhgia == 7) {
-            return $array[1];
-        }
-
-        if($id_baidanhgia == 8) {
-            return $array[2];
-        }
-
-        if($id_baidanhgia == 9 || $id_baidanhgia == 10) {
-            return $array[3];
-        }
     }
 
     public function edit_danh_gia_hoc_phan($id_decuong) {
@@ -432,7 +504,6 @@ class DeCuongChiTietController extends Controller
         $all_cdr = DB::table('table_chuandaura_monhoc')->where('id_decuong', $id_decuong)->get();
 
         $all_tpdg = DB::table('table_thanhphandanhgia')->where('id_baidanhgia', 0)->get();
-
         $all_tpdg_child = DB::table('table_thanhphandanhgia')->where('id_baidanhgia', '!=', 0)->get();
 
         $decuong_dghp = DB::table('table_decuongchitiet')->select('id_hocphan')->where('id_decuong', $id_decuong)->first();
@@ -440,23 +511,50 @@ class DeCuongChiTietController extends Controller
 
         $all_danhgiahocphan = DB::table('table_danhgiahocphan')->where('id_hocphan', $id_hocphan)->get();
 
-        foreach($all_tpdg_child as $vl1) {
-            foreach($all_danhgiahocphan as $vl2) {
-                if($vl1->id == $vl2->id_baidanhgia) {
-                    $vl1->has_id_bdg = 1;
-                    break;
-                } else {
-                    $vl1->has_id_bdg = 0;
+      
+        foreach($all_tpdg_child as $value) {
+            foreach($all_tpdg as $value2) {
+                if($value2->id == $value->id_baidanhgia) {
+                    $value->parent = $value2->ten_thanhphandanhgia;
                 }
             }
         }
+        $lenght = count($all_tpdg_child);
+        for ($i = 0; $i < $lenght; $i ++) {
+            $temp = $all_tpdg_child[$i];
+            for ($k = $i + 1; $k < $lenght; $k ++) {
+                if($all_tpdg_child[$k]->id_baidanhgia == $temp->id_baidanhgia) {
+                    $temp->has_child = 1;
+                    $all_tpdg_child[$i+1]->child = 1;
+                    $temp->has_child_exits=1;
+                    $all_tpdg_child[$i+1]->has_child_exits = 1;
+                    break;
+                } 
+            }
 
-        $dghp_trongsothanhphan = DB::table('table_danhgiahocphan')->select('id_baidanhgia_parent', 'trongsothanhphan')->where('id_hocphan', $id_hocphan)->distinct()->get();
-        
+            if(!isset($temp->has_child_exits)) {
+                $temp->has_child_exits=0;
+            }
+    
+        }
+        // foreach($all_tpdg_child as $vl1) {
+        //     foreach($all_danhgiahocphan as $vl2) {
+        //         if($vl1->id == $vl2->id_baidanhgia) {
+        //             $vl1->has_id_bdg = 1;
+        //             break;
+        //         } else {
+        //             $vl1->has_id_bdg = 0;
+        //         }
+        //     }
+        // }
+
+        $all_trongsothanhphan = DB::table('table_trongso_lhp')->where('id_lhp', $id_hocphan)->get();
         foreach($all_tpdg as $vl_all_tpdg) {
-            foreach($dghp_trongsothanhphan as $vl_dghp_trongsothanhphan) {
-                if($vl_all_tpdg->id == $vl_dghp_trongsothanhphan->id_baidanhgia_parent) {
+            $vl_all_tpdg->has_id_tstp = 0;
+            foreach($all_trongsothanhphan as $vl_all_trongsothanhphan) {
+                if($vl_all_tpdg->id == $vl_all_trongsothanhphan->id_trongso) {
                     $vl_all_tpdg->has_id_tstp = 1;
+                    $vl_all_tpdg->trongso = $vl_all_trongsothanhphan->trongso;
                     break;
                 } else {
                     $vl_all_tpdg->has_id_tstp = 0;
@@ -464,21 +562,66 @@ class DeCuongChiTietController extends Controller
             }
         }
 
-        // echo "<pre>";
-        // print_r($all_tpdg);
+        foreach($all_danhgiahocphan as $vl_dghp_cdr) {
+            $vl_dghp_cdr->cdr_hocphan = explode("_", $vl_dghp_cdr->cdr_hocphan);
+        }
 
+        $array_chuandaura = array();
+
+        foreach($vl_dghp_cdr->cdr_hocphan as $value) {
+            $array_chuandaura[] = $value;
+        }
+
+        $stt_cdr = 1;
+        foreach($all_cdr as $vl) {
+            $vl->has_cdr = 0;
+            $vl->stt = $stt_cdr;
+            for($i = 0; $i < count($array_chuandaura); $i++) {
+                if($array_chuandaura[$i] == $stt_cdr) {
+                    $vl->has_cdr = 1;
+                }
+            }
+            $stt_cdr++;
+        }
+
+        foreach($all_tpdg_child as $value_result ) {
+            $value_result->has_exits = 0;
+            foreach($all_danhgiahocphan as $value_result2) {
+                if($value_result->id == $value_result2->id_baidanhgia) {
+                    $value_result->phuongphapdanhgia = $value_result2->phuongphapdanhgia;
+                    $value_result->trongsobaidanhgia = $value_result2->trongsobaidanhgia;
+                    $value_result->cdr_hocphan = $value_result2->cdr_hocphan;
+                    $value_result->has_exits = 1;
+                }
+            }
+        }
+
+        foreach($all_tpdg_child as $value ) {
+            foreach($all_tpdg as $value2) {
+                if($value->parent == $value2->ten_thanhphandanhgia) {
+                    if(isset($value2->trongso)) {
+                        $value->trongso = $value2->trongso;    
+                    }  
+                } 
+            }
+        }
+
+        // echo "<pre>";
+        // print_r($all_cdr);
+        // echo $array_chuandaura[1];
         // die();
 
         return view('admin.decuong.edit_danh_gia_hoc_phan')->with('all_cdr', $all_cdr)->with('all_tpdg', $all_tpdg)
         ->with('all_tpdg_child', $all_tpdg_child)->with('id_decuong', $id_decuong)
-        ->with('all_danhgiahocphan', $all_danhgiahocphan)->with('dghp_trongsothanhphan', $dghp_trongsothanhphan);
+        ->with('all_danhgiahocphan', $all_danhgiahocphan)->with('all_trongsothanhphan', $all_trongsothanhphan)
+        ->with('array_chuandaura', $array_chuandaura);
 
     }
 
     public function insert_edit_danh_gia_hoc_phan($id_decuong, Request $request) {
 
         $trong_so_thanh_phan = $request->trong_so_thanh_phan;
-        $data_dghp = $this->array_2d($request->bai_danh_gia, 5);
+        $data_dghp = $this->array_2d($request->bai_danh_gia, 4);
 
         $decuong_dghp = DB::table('table_decuongchitiet')->select('id_hocphan')->where('id_decuong', $id_decuong)->first();
         $id_hocphan = $decuong_dghp->id_hocphan;
@@ -486,16 +629,83 @@ class DeCuongChiTietController extends Controller
         $deletedghp = danhgiahocphan::find($id_hocphan);
         $deletedghp->delete();
 
-        foreach ($data_dghp as $value_data_dghp) {
-            $danh_gia_hoc_phan = new danhgiahocphan;
-            $danh_gia_hoc_phan->phuongphapdanhgia = $value_data_dghp[1];
-            $danh_gia_hoc_phan->trongsobaidanhgia = $value_data_dghp[2];
-            $danh_gia_hoc_phan->trongsothanhphan = $this->get_trong_so_thanh_phan($value_data_dghp[0], $trong_so_thanh_phan);
-            $danh_gia_hoc_phan->cdr_hocphan = $value_data_dghp[3];
-            $danh_gia_hoc_phan->id_baidanhgia = $value_data_dghp[0];
-            $danh_gia_hoc_phan->id_baidanhgia_parent = $value_data_dghp[4];
-            $danh_gia_hoc_phan->id_hocphan = $id_hocphan;
-            $danh_gia_hoc_phan->save();
+        $deletetslhp = trongsolophocphan::find($id_hocphan);
+        $deletetslhp->delete();
+
+        $chuandaura = $request->chuan_dau_ra;
+        
+        $trongsothanhphan1 = $request->trong_so_thanh_phan_1;
+        $trongsothanhphan2 = $request->trong_so_thanh_phan_2;
+        $trongsothanhphan3 = $request->trong_so_thanh_phan_3;
+        $trongsothanhphan4 = $request->trong_so_thanh_phan_4;
+
+        // echo $trongsothanhphan1/100;
+        // die();
+
+        if($trongsothanhphan1 != null) {
+            $trong_so_1 = new trongsolophocphan;
+            $trong_so_1->id_lhp = $id_hocphan;
+            $trong_so_1->id_trongso = 1;
+            $trong_so_1->trongso = $trongsothanhphan1/100;
+            $trong_so_1->trangthai = 0;
+            $trong_so_1->save();
+        }
+
+        if($trongsothanhphan2 != null) {
+            $trong_so_2 = new trongsolophocphan;
+            $trong_so_2->id_lhp = $id_hocphan;
+            $trong_so_2->id_trongso = 2;
+            $trong_so_2->trongso = $trongsothanhphan2/100;
+            $trong_so_2->trangthai = 0;
+            $trong_so_2->save();
+        }
+
+        if($trongsothanhphan3 != null) {
+            $trong_so_3 = new trongsolophocphan;
+            $trong_so_3->id_lhp = $id_hocphan;
+            $trong_so_3->id_trongso = 3;
+            $trong_so_3->trongso = $trongsothanhphan3/100;
+            $trong_so_3->trangthai = 0;
+            $trong_so_3->save();
+        }
+
+        if($trongsothanhphan4 != null) {
+            $trong_so_4 = new trongsolophocphan;
+            $trong_so_4->id_lhp = $id_hocphan;
+            $trong_so_4->id_trongso = 4;
+            $trong_so_4->trongso = $trongsothanhphan4/100;
+            $trong_so_4->trangthai = 0;
+            $trong_so_4->save();
+        }
+
+
+        if($data_dghp != null) {
+            foreach ($data_dghp as $value_data_dghp) {
+                $danh_gia_hoc_phan = new danhgiahocphan;
+                $danh_gia_hoc_phan->phuongphapdanhgia = $value_data_dghp[0];
+                $danh_gia_hoc_phan->trongsobaidanhgia = $value_data_dghp[1];
+                $danh_gia_hoc_phan->id_baidanhgia = $value_data_dghp[3];
+                $danh_gia_hoc_phan->id_baidanhgia_parent = $value_data_dghp[2];
+                $danh_gia_hoc_phan->id_hocphan = $id_hocphan;
+    
+                $cdr_hocphan = "";
+    
+                if(isset($chuandaura) && $chuandaura != null) {
+                    foreach($chuandaura as $value_chuandaura) {
+                        $value_chuandaura = explode("_", $value_chuandaura);
+                     
+                        if((integer)$value_chuandaura[0] == $value_data_dghp[3]) {
+                            $cdr_hocphan .= $value_chuandaura[1]."_";
+                        }
+                    }
+        
+                    $cdr_hocphan = rtrim($cdr_hocphan, '_');
+                }
+    
+                $danh_gia_hoc_phan->cdr_hocphan = $cdr_hocphan;
+    
+                $danh_gia_hoc_phan->save();
+            }
         }
 
         return Redirect::to('/danh-sach-de-cuong');
@@ -512,10 +722,13 @@ class DeCuongChiTietController extends Controller
         $all_dghp = DB::table('table_danhgiahocphan')->join('table_thanhphandanhgia', 'table_danhgiahocphan.id_baidanhgia'
         ,'table_thanhphandanhgia.id')->where('table_danhgiahocphan.id_hocphan', $id_hocphan)->get();
 
+        $all_trongso = DB::table('table_trongso_lhp')->where('id_lhp', $id_hocphan)->get();
+
         $all_baidanhgia = array();
 
         foreach($all_dghp as $vl_dghp_bdg) {
             $all_baidanhgia[] = $vl_dghp_bdg->id_baidanhgia_parent;
+            $vl_dghp_bdg->cdr_hocphan = explode("_", $vl_dghp_bdg->cdr_hocphan);
         }
 
         $dghp_parent = DB::table('table_thanhphandanhgia')->where('id_baidanhgia', 0)->get();
@@ -564,8 +777,13 @@ class DeCuongChiTietController extends Controller
             }
         }
 
+        // echo "<pre>";
+        // print_r($all_dghp);
+        // die();
+
         return view('admin.decuong.ke_hoach_giang_day')->with('all_cdr', $all_cdr)->with('all_dghp', $all_dghp)
-        ->with('baidanhgia', $baidanhgia)->with('id_decuong', $id_decuong);
+        ->with('baidanhgia', $baidanhgia)->with('id_decuong', $id_decuong)
+        ->with('all_trongso', $all_trongso);
     }
 
     public function data_tree_dghp($data, $parent_id = 0, $level = 0, $hasChild = 0) {
@@ -592,14 +810,15 @@ class DeCuongChiTietController extends Controller
         $id_hocphan = $decuong_dghp->id_hocphan;
 
         $ke_hoach_giang_day = $request->ke_hoach_giang_day;
-        $data_khgd = $this->array_2d($request->ke_hoach_giang_day, 4);
+        $data_khgd = $this->array_2d($request->ke_hoach_giang_day, 3);
 
-        $data_khgd_thuchanh = $this->array_2d($request->ke_hoach_giang_day_thuchanh, 4);
+        $data_khgd_thuchanh = $this->array_2d($request->ke_hoach_giang_day_thuchanh, 3);
 
-        // echo "<pre>";
-        // print_r($data_khgd);
-        // echo "<pre>";
-        // print_r($data_khgd_thuchanh);
+        $bai_danh_gia = $request->bai_danh_gia;
+        $chuan_dau_ra = $request->chuan_dau_ra;
+
+        $bai_danh_gia_thuchanh = $request->bai_danh_gia_thuchanh;
+        $chuan_dau_ra_thuchanh = $request->chuan_dau_ra_thuchanh;
 
         $namhoc = $request->namhoc;
         $hocky = $request->hocky;
@@ -613,8 +832,34 @@ class DeCuongChiTietController extends Controller
                 $kehoachgiangday = new kehoachgiangday;
                 $kehoachgiangday->noidung = $vl_khgd_0;
                 $kehoachgiangday->hoatdongdayhoc = $vl_khgd_1;
-                $kehoachgiangday->baidanhgia = $value_data_khgd[2];
-                $kehoachgiangday->cdrhocphan = $value_data_khgd[3];
+
+                $bdg = "";
+                if(isset($bai_danh_gia) && $bai_danh_gia != null) {
+                    foreach($bai_danh_gia as $value_bdg) {
+                        $value_bdg = explode("_", $value_bdg);
+                       
+                        if($value_bdg[0] == $value_data_khgd[2]) {
+                            $bdg .= $value_bdg[1]."_";
+                        }
+                    }
+                    $bdg = rtrim($bdg, '_');
+                }
+
+                $cdr = "";
+                if(isset($chuan_dau_ra) && $chuan_dau_ra != null) {
+                    foreach($chuan_dau_ra as $value_cdr) {
+                        $value_cdr = explode("_", $value_cdr);
+                       
+                        if($value_cdr[0] == $value_data_khgd[2]) {
+                            $cdr .= $value_cdr[1]."_";
+                        }
+                    }
+                    $cdr = rtrim($cdr, '_');
+                }
+
+                $kehoachgiangday->baidanhgia = $bdg;
+                $kehoachgiangday->cdrhocphan = $cdr;
+
                 $kehoachgiangday->id_hocphan = $id_hocphan;
                 $kehoachgiangday->thuochocphan = "lythuyet";
                 $kehoachgiangday->namhoc = $namhoc;
@@ -634,8 +879,34 @@ class DeCuongChiTietController extends Controller
                 $kehoachgiangdaythuchanh = new kehoachgiangday;
                 $kehoachgiangdaythuchanh->noidung = $vl_khgd_thuchanh_0;
                 $kehoachgiangdaythuchanh->hoatdongdayhoc = $vl_khgd_thuchanh_1;
-                $kehoachgiangdaythuchanh->baidanhgia = $value_data_khgd_thuchanh[2];
-                $kehoachgiangdaythuchanh->cdrhocphan = $value_data_khgd_thuchanh[3];
+
+                $bdg_thuchanh = "";
+                if(isset($bai_danh_gia_thuchanh) && $bai_danh_gia_thuchanh != null) {
+                    foreach($bai_danh_gia_thuchanh as $value_bdg_thuchanh) {
+                        $value_bdg_thuchanh = explode("_", $value_bdg_thuchanh);
+                       
+                        if($value_bdg_thuchanh[0] == $value_data_khgd_thuchanh[2]) {
+                            $bdg_thuchanh .= $value_bdg_thuchanh[1]."_";
+                        }
+                    }
+                    $bdg_thuchanh = rtrim($bdg_thuchanh, '_');
+                }
+
+                $cdr_thuchanh = "";
+                if(isset($chuan_dau_ra_thuchanh) && $chuan_dau_ra_thuchanh != null) {
+                    foreach($chuan_dau_ra_thuchanh as $value_cdr_thuchanh) {
+                        $value_cdr_thuchanh = explode("_", $value_cdr_thuchanh);
+                       
+                        if($value_cdr_thuchanh[0] == $value_data_khgd_thuchanh[2]) {
+                            $cdr_thuchanh .= $value_cdr_thuchanh[1]."_";
+                        }
+                    }
+                    $cdr_thuchanh = rtrim($cdr_thuchanh, '_');
+                }
+
+                $kehoachgiangdaythuchanh->baidanhgia = $bdg_thuchanh;
+                $kehoachgiangdaythuchanh->cdrhocphan = $cdr_thuchanh;
+
                 $kehoachgiangdaythuchanh->id_hocphan = $id_hocphan;
                 $kehoachgiangdaythuchanh->thuochocphan = "thuchanh";
                 $kehoachgiangdaythuchanh->namhoc = $namhoc;
@@ -673,14 +944,16 @@ class DeCuongChiTietController extends Controller
         $all_dghp = DB::table('table_danhgiahocphan')->join('table_thanhphandanhgia', 'table_danhgiahocphan.id_baidanhgia'
         ,'table_thanhphandanhgia.id')->where('table_danhgiahocphan.id_hocphan', $id_hocphan)->get();
 
+        $all_trongso = DB::table('table_trongso_lhp')->where('id_lhp', $id_hocphan)->get();
+
         $all_baidanhgia = array();
 
         foreach($all_dghp as $vl_dghp_bdg) {
             $all_baidanhgia[] = $vl_dghp_bdg->id_baidanhgia_parent;
+            $vl_dghp_bdg->cdr_hocphan = explode("_", $vl_dghp_bdg->cdr_hocphan);
         }
 
         $dghp_parent = DB::table('table_thanhphandanhgia')->where('id_baidanhgia', 0)->get();
-
 
         foreach($all_dghp as $value_child) {
             foreach($dghp_parent as $value_parent) {
@@ -737,16 +1010,25 @@ class DeCuongChiTietController extends Controller
         foreach($all_edit_khgd as $value_all_edit_khgd) {
             $value_all_edit_khgd->noidung = $this->tach_khgd($value_all_edit_khgd->noidung);
             $value_all_edit_khgd->hoatdongdayhoc = $this->tach_khgd($value_all_edit_khgd->hoatdongdayhoc);
+            $value_all_edit_khgd->baidanhgia = explode("_", $value_all_edit_khgd->baidanhgia);
+            $value_all_edit_khgd->cdrhocphan = explode("_", $value_all_edit_khgd->cdrhocphan);
         }
 
         foreach($all_edit_khgd_thuchanh as $value_all_edit_khgd_thuchanh) {
             $value_all_edit_khgd_thuchanh->noidung = $this->tach_khgd($value_all_edit_khgd_thuchanh->noidung);
             $value_all_edit_khgd_thuchanh->hoatdongdayhoc = $this->tach_khgd($value_all_edit_khgd_thuchanh->hoatdongdayhoc);
+            $value_all_edit_khgd_thuchanh->baidanhgia = explode("_", $value_all_edit_khgd_thuchanh->baidanhgia);
+            $value_all_edit_khgd_thuchanh->cdrhocphan = explode("_", $value_all_edit_khgd_thuchanh->cdrhocphan);
         }
+
+        // echo "<pre>";
+        // print_r($all_trongso);
+        // die();
 
         return view('admin.decuong.edit_ke_hoach_giang_day')->with('all_cdr', $all_cdr)->with('all_dghp', $all_dghp)
         ->with('baidanhgia', $baidanhgia)->with('id_decuong', $id_decuong)->with('all_edit_khgd', $all_edit_khgd)
-        ->with('all_edit_khgd_thuchanh', $all_edit_khgd_thuchanh)->with('namhoc', $namhoc)->with('hocky', $hocky);
+        ->with('all_edit_khgd_thuchanh', $all_edit_khgd_thuchanh)->with('namhoc', $namhoc)->with('hocky', $hocky)
+        ->with('all_trongso', $all_trongso);
     }
 
     public function tach_khgd($string) {
@@ -769,9 +1051,15 @@ class DeCuongChiTietController extends Controller
         $id_hocphan = $decuong_dghp->id_hocphan;
 
         $ke_hoach_giang_day = $request->ke_hoach_giang_day;
-        $data_khgd = $this->array_2d($request->ke_hoach_giang_day, 4);
+        $data_khgd = $this->array_2d($request->ke_hoach_giang_day, 3);
 
-        $data_khgd_thuchanh = $this->array_2d($request->ke_hoach_giang_day_thuchanh, 4);
+        $data_khgd_thuchanh = $this->array_2d($request->ke_hoach_giang_day_thuchanh, 3);
+
+        $bai_danh_gia = $request->bai_danh_gia;
+        $chuan_dau_ra = $request->chuan_dau_ra;
+
+        $bai_danh_gia_thuchanh = $request->bai_danh_gia_thuchanh;
+        $chuan_dau_ra_thuchanh = $request->chuan_dau_ra_thuchanh;
 
         $namhoc = $request->namhoc;
         $hocky = $request->hocky;
@@ -788,8 +1076,34 @@ class DeCuongChiTietController extends Controller
                 $kehoachgiangday = new kehoachgiangday;
                 $kehoachgiangday->noidung = $vl_khgd_0;
                 $kehoachgiangday->hoatdongdayhoc = $vl_khgd_1;
-                $kehoachgiangday->baidanhgia = $value_data_khgd[2];
-                $kehoachgiangday->cdrhocphan = $value_data_khgd[3];
+
+                $bdg = "";
+                if(isset($bai_danh_gia) && $bai_danh_gia != null) {
+                    foreach($bai_danh_gia as $value_bdg) {
+                        $value_bdg = explode("_", $value_bdg);
+                       
+                        if($value_bdg[0] == $value_data_khgd[2]) {
+                            $bdg .= $value_bdg[1]."_";
+                        }
+                    }
+                    $bdg = rtrim($bdg, '_');
+                }
+
+                $cdr = "";
+                if(isset($chuan_dau_ra) && $chuan_dau_ra != null) {
+                    foreach($chuan_dau_ra as $value_cdr) {
+                        $value_cdr = explode("_", $value_cdr);
+                       
+                        if($value_cdr[0] == $value_data_khgd[2]) {
+                            $cdr .= $value_cdr[1]."_";
+                        }
+                    }
+                    $cdr = rtrim($cdr, '_');
+                }
+
+                $kehoachgiangday->baidanhgia = $bdg;
+                $kehoachgiangday->cdrhocphan = $cdr;
+
                 $kehoachgiangday->id_hocphan = $id_hocphan;
                 $kehoachgiangday->thuochocphan = "lythuyet";
                 $kehoachgiangday->namhoc = $namhoc;
@@ -809,8 +1123,34 @@ class DeCuongChiTietController extends Controller
                 $kehoachgiangdaythuchanh = new kehoachgiangday;
                 $kehoachgiangdaythuchanh->noidung = $vl_khgd_thuchanh_0;
                 $kehoachgiangdaythuchanh->hoatdongdayhoc = $vl_khgd_thuchanh_1;
-                $kehoachgiangdaythuchanh->baidanhgia = $value_data_khgd_thuchanh[2];
-                $kehoachgiangdaythuchanh->cdrhocphan = $value_data_khgd_thuchanh[3];
+
+                $bdg_thuchanh = "";
+                if(isset($bai_danh_gia_thuchanh) && $bai_danh_gia_thuchanh != null) {
+                    foreach($bai_danh_gia_thuchanh as $value_bdg_thuchanh) {
+                        $value_bdg_thuchanh = explode("_", $value_bdg_thuchanh);
+                       
+                        if($value_bdg_thuchanh[0] == $value_data_khgd_thuchanh[2]) {
+                            $bdg_thuchanh .= $value_bdg_thuchanh[1]."_";
+                        }
+                    }
+                    $bdg_thuchanh = rtrim($bdg_thuchanh, '_');
+                }
+
+                $cdr_thuchanh = "";
+                if(isset($chuan_dau_ra_thuchanh) && $chuan_dau_ra_thuchanh != null) {
+                    foreach($chuan_dau_ra_thuchanh as $value_cdr_thuchanh) {
+                        $value_cdr_thuchanh = explode("_", $value_cdr_thuchanh);
+                       
+                        if($value_cdr_thuchanh[0] == $value_data_khgd_thuchanh[2]) {
+                            $cdr_thuchanh .= $value_cdr_thuchanh[1]."_";
+                        }
+                    }
+                    $cdr_thuchanh = rtrim($cdr_thuchanh, '_');
+                }
+
+                $kehoachgiangdaythuchanh->baidanhgia = $bdg_thuchanh;
+                $kehoachgiangdaythuchanh->cdrhocphan = $cdr_thuchanh;
+
                 $kehoachgiangdaythuchanh->id_hocphan = $id_hocphan;
                 $kehoachgiangdaythuchanh->thuochocphan = "thuchanh";
                 $kehoachgiangdaythuchanh->namhoc = $namhoc;
