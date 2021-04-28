@@ -1,0 +1,10 @@
+INSERT INTO `table_thanhphandanhgia`(`id`, `ten_thanhphandanhgia`, `id_baidanhgia`) VALUES (1, 'Đánh giá quá trình', 0);
+INSERT INTO `table_thanhphandanhgia`(`id`, `ten_thanhphandanhgia`, `id_baidanhgia`) VALUES (2, 'Đánh giá bài tập', 0);
+INSERT INTO `table_thanhphandanhgia`(`id`, `ten_thanhphandanhgia`, `id_baidanhgia`) VALUES (3, 'Đánh giá giữa kì', 0);
+INSERT INTO `table_thanhphandanhgia`(`id`, `ten_thanhphandanhgia`, `id_baidanhgia`) VALUES (4, 'Đánh giá cuối kì', 0);
+INSERT INTO `table_thanhphandanhgia`(`id`, `ten_thanhphandanhgia`, `id_baidanhgia`) VALUES (5, 'Điểm danh', 1);
+INSERT INTO `table_thanhphandanhgia`(`id`, `ten_thanhphandanhgia`, `id_baidanhgia`) VALUES (6, 'Bài tập trên lớp ', 2);
+INSERT INTO `table_thanhphandanhgia`(`id`, `ten_thanhphandanhgia`, `id_baidanhgia`) VALUES (7, 'Báo cáo mô tả bài tập nhóm', 2);
+INSERT INTO `table_thanhphandanhgia`(`id`, `ten_thanhphandanhgia`, `id_baidanhgia`) VALUES (8, 'Kiểm tra giữa kì ', 3);
+INSERT INTO `table_thanhphandanhgia`(`id`, `ten_thanhphandanhgia`, `id_baidanhgia`) VALUES (9, 'Thi cuối kì', 4);
+INSERT INTO `table_thanhphandanhgia`(`id`, `ten_thanhphandanhgia`, `id_baidanhgia`) VALUES (10, 'Thực hành/Thí nghiệm', 4);
