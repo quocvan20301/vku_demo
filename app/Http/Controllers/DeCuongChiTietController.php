@@ -11,7 +11,7 @@ use App\Models\chuandauramonhoc;
 use App\Models\danhgiahocphan;
 use App\Models\thanhphandanhgia;
 use App\Models\kehoachgiangday;
-use App\Models\trongsolophocphan;
+use App\Models\trongsohocphan;
 use DB;
 use Redirect;
 
@@ -94,7 +94,7 @@ class DeCuongChiTietController extends Controller
 
     public function danhsachdecuong($id_khoa) {
 
-      
+       
         if ($id_khoa == 0) {
             $all_decuong = DB::table('table_decuongchitiet')
             ->join('table_hocphan', 'table_hocphan.id', 'table_decuongchitiet.id_hocphan')
@@ -142,7 +142,6 @@ class DeCuongChiTietController extends Controller
 
         // echo "<pre>";
         // print_r($all_decuong);
-
         // die();
 
         return view('admin.decuong.danhsach_decuong')
@@ -199,7 +198,7 @@ class DeCuongChiTietController extends Controller
 		    $chuandaura_monhoc->save();
 		}
 
-		return Redirect::to('/admin');
+		return Redirect::to('/danh-sach-de-cuong/0');
 
     }
 
@@ -251,7 +250,7 @@ class DeCuongChiTietController extends Controller
             $chuandaura_monhoc->save();
         }
 
-        return Redirect::to('/danh-sach-de-cuong');
+        return Redirect::to('/danh-sach-de-cuong/0');
     }
 
     public function array_2d($array, $col_count=2){
@@ -285,13 +284,13 @@ class DeCuongChiTietController extends Controller
         $deletedghp = danhgiahocphan::find($id_hocphan);
         $deletedghp->delete();
 
-        $deletetslhp = trongsolophocphan::find($id_hocphan);
+        $deletetslhp = trongsohocphan::find($id_hocphan);
         $deletetslhp->delete();
 
         $deletekhgd = kehoachgiangday::find($id_hocphan);
         $deletekhgd->delete();
 
-        return Redirect::to('/danh-sach-de-cuong');
+        return Redirect::to('/danh-sach-de-cuong/0');
 
     }
 
@@ -322,7 +321,7 @@ class DeCuongChiTietController extends Controller
         $all_dghp = DB::table('table_danhgiahocphan')->join('table_thanhphandanhgia', 'table_danhgiahocphan.id_baidanhgia'
         ,'table_thanhphandanhgia.id')->where('table_danhgiahocphan.id_hocphan', $id_hocphan)->get();
 
-        $all_trongso = DB::table('table_trongso_lhp')->where('id_lhp', $id_hocphan)->get();
+        $all_trongso = DB::table('table_trongso_hp')->where('id_hp', $id_hocphan)->get();
 
         $all_baidanhgia = array();
 
@@ -470,43 +469,35 @@ class DeCuongChiTietController extends Controller
         $trongsothanhphan3 = $request->trong_so_thanh_phan_3;
         $trongsothanhphan4 = $request->trong_so_thanh_phan_4;
 
-        if($trongsothanhphan1 != null) {
-            $trong_so_1 = new trongsolophocphan;
-            $trong_so_1->id_lhp = $id_hocphan;
-            $trong_so_1->id_trongso = 1;
-            $trong_so_1->trongso = $trongsothanhphan1/100;
-            $trong_so_1->trangthai = 0;
-            $trong_so_1->save();
-        }
+        $trong_so_1 = new trongsohocphan;
+        $trong_so_1->id_hp = $id_hocphan;
+        $trong_so_1->id_trongso = 1;
+        $trong_so_1->trongso = $trongsothanhphan1/100;
+        $trong_so_1->trangthai = 0;
+        $trong_so_1->save();
 
-        if($trongsothanhphan2 != null) {
-            $trong_so_2 = new trongsolophocphan;
-            $trong_so_2->id_lhp = $id_hocphan;
-            $trong_so_2->id_trongso = 2;
-            $trong_so_2->trongso = $trongsothanhphan2/100;
-            $trong_so_2->trangthai = 0;
-            $trong_so_2->save();
-        }
+        $trong_so_2 = new trongsohocphan;
+        $trong_so_2->id_hp = $id_hocphan;
+        $trong_so_2->id_trongso = 2;
+        $trong_so_2->trongso = $trongsothanhphan2/100;
+        $trong_so_2->trangthai = 0;
+        $trong_so_2->save();
 
-        if($trongsothanhphan3 != null) {
-            $trong_so_3 = new trongsolophocphan;
-            $trong_so_3->id_lhp = $id_hocphan;
-            $trong_so_3->id_trongso = 3;
-            $trong_so_3->trongso = $trongsothanhphan3/100;
-            $trong_so_3->trangthai = 0;
-            $trong_so_3->save();
-        }
+        $trong_so_3 = new trongsohocphan;
+        $trong_so_3->id_hp = $id_hocphan;
+        $trong_so_3->id_trongso = 3;
+        $trong_so_3->trongso = $trongsothanhphan3/100;
+        $trong_so_3->trangthai = 0;
+        $trong_so_3->save();
 
-        if($trongsothanhphan4 != null) {
-            $trong_so_4 = new trongsolophocphan;
-            $trong_so_4->id_lhp = $id_hocphan;
-            $trong_so_4->id_trongso = 4;
-            $trong_so_4->trongso = $trongsothanhphan4/100;
-            $trong_so_4->trangthai = 0;
-            $trong_so_4->save();
-        }
+        $trong_so_4 = new trongsohocphan;
+        $trong_so_4->id_hp = $id_hocphan;
+        $trong_so_4->id_trongso = 4;
+        $trong_so_4->trongso = $trongsothanhphan4/100;
+        $trong_so_4->trangthai = 0;
+        $trong_so_4->save();
 
-
+ 
         if($data_dghp != null) {
             foreach ($data_dghp as $value_data_dghp) {
                 $danh_gia_hoc_phan = new danhgiahocphan;
@@ -536,7 +527,7 @@ class DeCuongChiTietController extends Controller
             }
         }
 
-        return Redirect::to('/danh-sach-de-cuong');
+        return Redirect::to('/danh-sach-de-cuong/0');
     }
 
     public function edit_danh_gia_hoc_phan($id_decuong) {
@@ -575,20 +566,10 @@ class DeCuongChiTietController extends Controller
             if(!isset($temp->has_child_exits)) {
                 $temp->has_child_exits=0;
             }
-    
         }
-        // foreach($all_tpdg_child as $vl1) {
-        //     foreach($all_danhgiahocphan as $vl2) {
-        //         if($vl1->id == $vl2->id_baidanhgia) {
-        //             $vl1->has_id_bdg = 1;
-        //             break;
-        //         } else {
-        //             $vl1->has_id_bdg = 0;
-        //         }
-        //     }
-        // }
 
-        $all_trongsothanhphan = DB::table('table_trongso_lhp')->where('id_lhp', $id_hocphan)->get();
+        $all_trongsothanhphan = DB::table('table_trongso_hp')->where('id_hp', $id_hocphan)->get();
+
         foreach($all_tpdg as $vl_all_tpdg) {
             $vl_all_tpdg->has_id_tstp = 0;
             foreach($all_trongsothanhphan as $vl_all_trongsothanhphan) {
@@ -669,7 +650,7 @@ class DeCuongChiTietController extends Controller
         $deletedghp = danhgiahocphan::find($id_hocphan);
         $deletedghp->delete();
 
-        $deletetslhp = trongsolophocphan::find($id_hocphan);
+        $deletetslhp = trongsohocphan::find($id_hocphan);
         $deletetslhp->delete();
 
         $chuandaura = $request->chuan_dau_ra;
@@ -682,42 +663,33 @@ class DeCuongChiTietController extends Controller
         // echo $trongsothanhphan1/100;
         // die();
 
-        if($trongsothanhphan1 != null) {
-            $trong_so_1 = new trongsolophocphan;
-            $trong_so_1->id_lhp = $id_hocphan;
-            $trong_so_1->id_trongso = 1;
-            $trong_so_1->trongso = $trongsothanhphan1/100;
-            $trong_so_1->trangthai = 0;
-            $trong_so_1->save();
-        }
+        $trong_so_1 = new trongsohocphan;
+        $trong_so_1->id_hp = $id_hocphan;
+        $trong_so_1->id_trongso = 1;
+        $trong_so_1->trongso = $trongsothanhphan1/100;
+        $trong_so_1->trangthai = 0;
+        $trong_so_1->save();
 
-        if($trongsothanhphan2 != null) {
-            $trong_so_2 = new trongsolophocphan;
-            $trong_so_2->id_lhp = $id_hocphan;
-            $trong_so_2->id_trongso = 2;
-            $trong_so_2->trongso = $trongsothanhphan2/100;
-            $trong_so_2->trangthai = 0;
-            $trong_so_2->save();
-        }
+        $trong_so_2 = new trongsohocphan;
+        $trong_so_2->id_hp = $id_hocphan;
+        $trong_so_2->id_trongso = 2;
+        $trong_so_2->trongso = $trongsothanhphan2/100;
+        $trong_so_2->trangthai = 0;
+        $trong_so_2->save();
 
-        if($trongsothanhphan3 != null) {
-            $trong_so_3 = new trongsolophocphan;
-            $trong_so_3->id_lhp = $id_hocphan;
-            $trong_so_3->id_trongso = 3;
-            $trong_so_3->trongso = $trongsothanhphan3/100;
-            $trong_so_3->trangthai = 0;
-            $trong_so_3->save();
-        }
+        $trong_so_3 = new trongsohocphan;
+        $trong_so_3->id_hp = $id_hocphan;
+        $trong_so_3->id_trongso = 3;
+        $trong_so_3->trongso = $trongsothanhphan3/100;
+        $trong_so_3->trangthai = 0;
+        $trong_so_3->save();
 
-        if($trongsothanhphan4 != null) {
-            $trong_so_4 = new trongsolophocphan;
-            $trong_so_4->id_lhp = $id_hocphan;
-            $trong_so_4->id_trongso = 4;
-            $trong_so_4->trongso = $trongsothanhphan4/100;
-            $trong_so_4->trangthai = 0;
-            $trong_so_4->save();
-        }
-
+        $trong_so_4 = new trongsohocphan;
+        $trong_so_4->id_hp = $id_hocphan;
+        $trong_so_4->id_trongso = 4;
+        $trong_so_4->trongso = $trongsothanhphan4/100;
+        $trong_so_4->trangthai = 0;
+        $trong_so_4->save();
 
         if($data_dghp != null) {
             foreach ($data_dghp as $value_data_dghp) {
@@ -748,7 +720,7 @@ class DeCuongChiTietController extends Controller
             }
         }
 
-        return Redirect::to('/danh-sach-de-cuong');
+        return Redirect::to('/danh-sach-de-cuong/0');
 
     }
 
@@ -762,7 +734,7 @@ class DeCuongChiTietController extends Controller
         $all_dghp = DB::table('table_danhgiahocphan')->join('table_thanhphandanhgia', 'table_danhgiahocphan.id_baidanhgia'
         ,'table_thanhphandanhgia.id')->where('table_danhgiahocphan.id_hocphan', $id_hocphan)->get();
 
-        $all_trongso = DB::table('table_trongso_lhp')->where('id_lhp', $id_hocphan)->get();
+        $all_trongso = DB::table('table_trongso_hp')->where('id_hp', $id_hocphan)->get();
 
         $all_baidanhgia = array();
 
@@ -957,7 +929,7 @@ class DeCuongChiTietController extends Controller
             }
         }
 
-        return Redirect::to('/danh-sach-de-cuong');
+        return Redirect::to('/danh-sach-de-cuong/0');
     }
 
     public function tach_hop_khgd($string) {
@@ -984,7 +956,7 @@ class DeCuongChiTietController extends Controller
         $all_dghp = DB::table('table_danhgiahocphan')->join('table_thanhphandanhgia', 'table_danhgiahocphan.id_baidanhgia'
         ,'table_thanhphandanhgia.id')->where('table_danhgiahocphan.id_hocphan', $id_hocphan)->get();
 
-        $all_trongso = DB::table('table_trongso_lhp')->where('id_lhp', $id_hocphan)->get();
+        $all_trongso = DB::table('table_trongso_hp')->where('id_hp', $id_hocphan)->get();
 
         $all_baidanhgia = array();
 
@@ -1201,7 +1173,7 @@ class DeCuongChiTietController extends Controller
             }
         }
 
-        return Redirect::to('/danh-sach-de-cuong');
+        return Redirect::to('/danh-sach-de-cuong/0');
     }
 
     public function mo_ta_ct_dt() {
