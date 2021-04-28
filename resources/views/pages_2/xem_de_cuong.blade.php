@@ -224,7 +224,17 @@
 											<td><p class="left-bdg">A.<?php echo $stt; ?>.1</p> <p>{{$value_dghp_parent->ten_thanhphandanhgia}}</p></td>
 											<td><p class="left-bdg">P.<?php echo $stt; ?>.1</p> <p>{{$value_dghp_parent->phuongphapdanhgia}}</p></td>
 											<td><p class="left-bdg">W.<?php echo $stt; ?>.1</p> <p>{{$value_dghp_parent->trongsobaidanhgia}} %</p></td>
-											<td rowspan="2"><p class="left-bdg">W.<?php echo $stt; ?></p> <p> %</p></td>
+											<td rowspan="2">
+												<p class="left-bdg">W.<?php echo $stt; ?></p> 
+												<p> 
+												@foreach($all_trongso as $value_trongso)
+													@if($value_trongso->id_trongso == $value_dghp_parent->id_baidanhgia)
+														{{$value_trongso->trongso*100}}
+													@endif
+												@endforeach
+												%
+												</p>
+											</td>
 											<td>
 												<p>
 												@foreach($value_dghp_parent->cdr_hocphan as $value_list_cdr)
@@ -257,13 +267,23 @@
 											</td>
 										</tr>
 									@endif			
-								@else
+								@else 
 									<tr>
 										<td><p class="left-bdg">A.<?php echo $stt; ?></p>  <p>{{$value_dghp_parent->ten_thanhphandanhgia_parent}}</p> </td>
 										<td><p class="left-bdg">A.<?php echo $stt; ?>.1</p> <p>{{$value_dghp_parent->ten_thanhphandanhgia}}</p></td>
 										<td><p class="left-bdg">P.<?php echo $stt; ?>.1</p> <p>{{$value_dghp_parent->phuongphapdanhgia}}</p></td>
 										<td><p class="left-bdg">W.<?php echo $stt; ?>.1</p> <p>{{$value_dghp_parent->trongsobaidanhgia}} %</p></td>
-										<td><p class="left-bdg">W.<?php echo $stt; ?></p> <p> %</p></td>
+										<td>
+											<p class="left-bdg">W.<?php echo $stt; ?></p> 
+											<p> 
+											@foreach($all_trongso as $value_trongso)
+												@if($value_trongso->id_trongso == $value_dghp_parent->id_baidanhgia)
+													{{$value_trongso->trongso*100}}
+												@endif
+											@endforeach
+											%
+											</p>
+										</td>
 										<td>
 											<p>
 											@foreach($value_dghp_parent->cdr_hocphan as $value_list_cdr)
@@ -315,7 +335,15 @@
 										@endfor
 									</ul>
 								</td>
-								<td>{{$value_all_khgd_lt->baidanhgia}}</td>
+								<td>
+									@foreach($value_all_khgd_lt->baidanhgia as $value_list_bdg)
+										@if (next($value_all_khgd_lt->baidanhgia)==true)
+										{{$value_list_bdg}},
+										@else
+										{{$value_list_bdg}}
+										@endif
+									@endforeach
+								</td>
 								<td>
 									@foreach($value_all_khgd_lt->cdrhocphan as $value_list_cdr)
 										@if (next($value_all_khgd_lt->cdrhocphan)==true)
@@ -362,7 +390,15 @@
 										@endfor
 									</ul>
 								</td>
-								<td>{{$value_all_khgd_th->baidanhgia}}</td>
+								<td>
+									@foreach($value_all_khgd_th->baidanhgia as $value_list_bdg)
+										@if (next($value_all_khgd_th->baidanhgia)==true)
+										{{$value_list_bdg}},
+										@else
+										{{$value_list_bdg}}
+										@endif
+									@endforeach
+								</td>
 								<td>
 									@foreach($value_all_khgd_th->cdrhocphan as $value_list_cdr)
 										@if (next($value_all_khgd_th->cdrhocphan)==true)

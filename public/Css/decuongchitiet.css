@@ -415,6 +415,16 @@
 	padding-bottom: 5px;
 }
 
+#select_khoa {
+	margin-left: 2.5%;
+	height: 33px;
+}
+
+.title_select_khoa {
+	padding-top: 10px;
+	text-align: center;
+}
+
 
 .danh-sach-de-cuong {
 	width: 96%;

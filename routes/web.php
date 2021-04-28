@@ -128,7 +128,7 @@ Route::get('/edit-footer', 'adminController@edit_footer');
 //de cuong
 
 Route::get('/them-de-cuong', 'DeCuongChiTietController@themdecuong');
-Route::get('/danh-sach-de-cuong', 'DeCuongChiTietController@danhsachdecuong');
+Route::get('/danh-sach-de-cuong/{id_khoa}', 'DeCuongChiTietController@danhsachdecuong');
 
 Route::get('de-cuong/dc-ten-hoc-phan', 'getAjax@ajtenhocphan');
 Route::get('de-cuong/dc-giang-vien-phu-trach', 'getAjax@ajgiangvienphutrach');
@@ -145,6 +145,7 @@ Route::post('/them-moi-de-cuong', 'DeCuongChiTietController@tao_decuong');
 Route::get('xem-de-cuong/{id_decuong}', 'DeCuongChiTietController@xem_de_cuong');
 
 Route::get('cau-truc-chuong-trinh-dao-tao', 'DeCuongChiTietController@cau_truc_ct_dt');
+Route::get('mo-ta-chuong-trinh-dao-tao', 'DeCuongChiTietController@mo_ta_ct_dt');
 
 Route::get('danh-gia-hoc-phan/{id_decuong}', 'DeCuongChiTietController@danh_gia_hoc_phan');
 Route::post('danh-gia-hoc-phan/{id_decuong}', 'DeCuongChiTietController@insert_danh_gia_hoc_phan');

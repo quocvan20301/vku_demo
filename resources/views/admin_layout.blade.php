@@ -70,7 +70,7 @@
 					<i class="icon-menu-ad-item fas fa-chevron-right"></i>
 					<ul class="sub-menu-ad-item">
 						<li><p><a href="{{URL::to('/them-de-cuong')}}">Thêm đề cương</a></p></li>
-						<li><p><a href="{{URL::to('/danh-sach-de-cuong')}}">Danh sách đề cương</a></p></li>
+						<li><p><a href="{{URL::to('/danh-sach-de-cuong/0')}}">Danh sách đề cương</a></p></li>
 					</ul>
 				</li>
 				<li class="menu-ad-item">

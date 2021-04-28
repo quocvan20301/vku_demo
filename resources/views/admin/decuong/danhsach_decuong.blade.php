@@ -5,8 +5,28 @@
 	<p>Danh sách đề cương</p>
 </div>
 
+<select name="" id="select_khoa">
+	<option value="0">All</option>
+	<option value="1" <?php if($id_khoa == 1) echo "selected" ?> >Khoa Khoa học máy tính</option>
+	<option value="2" <?php if($id_khoa == 2) echo "selected" ?> >Khoa Kỹ thuật máy tính</option>
+	<option value="3" <?php if($id_khoa == 3) echo "selected" ?> >Khoa Kinh tế số và Thương mại điện tử</option>
+</select>
 
-<table class="danh-sach-de-cuong" border="1px" cellspacing="0">
+<h3 class="title_select_khoa">Danh sách đề cương {{$ten_khoa}}</h3>
+
+<script>
+	$(document).ready(function() {
+		$('#select_khoa').on('change', function () {
+			var url = $(this).val();
+			if (url) { 
+				window.location.href = window.location.origin + '/vku/danh-sach-de-cuong/' + url;
+			}
+          return false;
+      });
+	});
+</script>
+
+<table class="danh-sach-de-cuong" border="1px" cellspacing="0" style="margin-bottom: 100px">
 	<thead>
 		<tr>
 			<td>STT</td>

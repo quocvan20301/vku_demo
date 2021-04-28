@@ -12,7 +12,7 @@
 <body>
 	<div class="cau-truc-ct-t">
 		<div class="container"> 
-			<div class="row">
+			<div class="row"> 
 				<div class="col-md-9"> 
                     <table border="1px" cellspacing="0">
                         <thead>

@@ -78,7 +78,7 @@
 			<tr>
 				<td  class="c1">9. Khoa phụ trách</td>
 				<td>
-					<select multiple name="khoa_phu_trach" class="khoa-phu-trach">
+					<select multiple name="khoa_phu_trach" class="khoa-phu-trach" required>
 						<option value="1">Khoa học máy tính</option>
 						<option value="2">Khoa kỹ thuật máy tính & điện tử</option>
 						<option value="3">Khoa kinh tế số & thương mại điện tử</option>
@@ -88,7 +88,7 @@
 			<tr>
 				<td  class="c1">10. Loại học phần</td>
 				<td>
-					<select multiple name="loai_hoc_phan" class="loai-hoc-phan">
+					<select multiple name="loai_hoc_phan" class="loai-hoc-phan" required>
 						<option value="1">Bắt buộc</option>
 						<option value="2">Tự chọn bắt buộc</option>
 						<option value="3">Tự chọn tự do</option>
@@ -98,7 +98,7 @@
 			<tr>
 				<td class="c1">11. Thuộc khối kiến thức</td>
 				<td>
-					<select multiple name="khoi_kien_thuc" class="khoi-kien-thuc">
+					<select multiple name="khoi_kien_thuc" class="khoi-kien-thuc" required>
 						<option value="1">Toán và Khoa học tự nhiên</option>
 						<option value="2">Kiến thức chung</option>
 						<option value="3">Kiến thức cơ sở ngành</option>
@@ -135,7 +135,7 @@
 			<tr>
 				<td class="c1">16.Chọn ngành</td>
 				<td>
-					<select multiple name="nganh" id="select-nganh" class="chon-nganh">
+					<select multiple name="nganh" id="select-nganh" class="chon-nganh" required>
 						@foreach($all_nganh as $value_nganh)
 						<option value="{{$value_nganh->id}}">{{$value_nganh->tennganh}}</option>
 						@endforeach
@@ -176,50 +176,15 @@
 					<textarea name="nhiemvu" required="" placeholder="Nhiệm vụ của học viên"></textarea>
 				</td>
 			</tr>
+			
 			<tr>
-				<td class="c1">18. Kế hoạch giảng dạy và học cho phần lý thuyết</td>
-				<td class="khgd">
-					<!-- <table border="1px">
-						<thead>
-							<tr>
-								<td>Tuần/Buổi</td>
-								<td>Nội dung chi tiết</td>
-								<td>Hoạt động dạy và học</td>
-								<td>Bài đánh giá</td>
-								<td>CĐR học phần</td>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>1</td>
-								<td>
-									<textarea id="content">
-										Welcome to TinyMCE!
-									</textarea>
-								</td>
-								<td>3</td>
-								<td>4</td>
-								<td>5</td>
-							</tr>
-							<script>
-								tinymce.init({
-									selector: '#content',
-									menubar: false,
-									toolbar: false,
-								});
-							</script>
-						</tbody>
-					</table> -->
-				</td>
-			</tr>
-			<tr>
-				<td class="c1">19. Tài liệu tham khảo - Giáo trình</td>
+				<td class="c1">18. Tài liệu tham khảo - Giáo trình</td>
 				<td>
 					<textarea name="tltk_giaotrinh" required="" placeholder="Tài liệu tham khảo - Giáo trình"></textarea>
 				</td>
 			</tr>
 			<tr>
-				<td class="c1">20. Tài liệu tham khảo - Sách</td>
+				<td class="c1">19. Tài liệu tham khảo - Sách</td>
 				<td>
 					<textarea name="tltk_sach" required="" placeholder="Tài liệu tham khảo - Sách"></textarea>
 				</td>

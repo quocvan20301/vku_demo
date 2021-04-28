@@ -92,12 +92,24 @@ class DeCuongChiTietController extends Controller
         ->with('all_cdr_nganh', $all_cdr_nganh);
     }
 
-    public function danhsachdecuong() {
+    public function danhsachdecuong($id_khoa) {
 
-        $all_decuong = DB::table('table_decuongchitiet')
-        ->join('table_hocphan', 'table_hocphan.id', 'table_decuongchitiet.id_hocphan')
-        ->join('table_giangvien', 'table_giangvien.id', 'table_decuongchitiet.giangvienphutrach_id')
-        ->get();
+      
+        if ($id_khoa == 0) {
+            $all_decuong = DB::table('table_decuongchitiet')
+            ->join('table_hocphan', 'table_hocphan.id', 'table_decuongchitiet.id_hocphan')
+            ->join('table_giangvien', 'table_giangvien.id', 'table_decuongchitiet.giangvienphutrach_id')
+            ->get();
+            $ten_khoa = '';
+        } else {
+            $all_decuong = DB::table('table_decuongchitiet')
+            ->join('table_hocphan', 'table_hocphan.id', 'table_decuongchitiet.id_hocphan')
+            ->join('table_giangvien', 'table_giangvien.id', 'table_decuongchitiet.giangvienphutrach_id')
+            ->where('khoaphutrach', $id_khoa)
+            ->get();
+            $list_ds_khoa = DB::table('table_khoa')->where('id', $id_khoa)->first();
+            $ten_khoa = $list_ds_khoa->tenKhoa;
+        }
 
         $danhsach_danhgiahocphan = DB::table('table_danhgiahocphan')->select('id_hocphan')->distinct()->get();
         $danhsach_kehoachgiangday = DB::table('table_kehoachgiangday')->select('id_hocphan')->distinct()->get();
@@ -133,7 +145,10 @@ class DeCuongChiTietController extends Controller
 
         // die();
 
-        return view('admin.decuong.danhsach_decuong')->with('all_decuong', $all_decuong);
+        return view('admin.decuong.danhsach_decuong')
+        ->with('all_decuong', $all_decuong)
+        ->with('ten_khoa', $ten_khoa)
+        ->with('id_khoa', $id_khoa);
     }
 
     public function tao_decuong(Request $request) {
@@ -148,11 +163,14 @@ class DeCuongChiTietController extends Controller
     	$de_cuong->giangvienphutrach_id = $data['id_giang_vien_phu_trach'];
 
     	$list_gvdc = "";
-    	foreach ($request->list_id_gvdc as $value_listgvdc) {
-    		$list_gvdc .= $value_listgvdc."_";
-    	}
-		$rs_list_gvdc = rtrim($list_gvdc, '_');
-
+        $rs_list_gvdc = "";
+        if(isset($request->list_id_gvdc) && $request->list_id_gvdc != null) {
+            foreach ($request->list_id_gvdc as $value_listgvdc) {
+                $list_gvdc .= $value_listgvdc."_";
+            }
+            $rs_list_gvdc = rtrim($list_gvdc, '_');
+        }
+    	
     	$de_cuong->gv_daycung = $rs_list_gvdc;
     	$de_cuong->khoaphutrach = $data['khoa_phu_trach'];
         $de_cuong->id_nganh = $data['nganh'];
@@ -196,11 +214,14 @@ class DeCuongChiTietController extends Controller
         $de_cuong->giangvienphutrach_id = $data['id_giang_vien_phu_trach'];
 
         $list_gvdc = "";
-        foreach ($request->list_id_gvdc as $value_listgvdc) {
-            $list_gvdc .= $value_listgvdc."_";
+        $rs_list_gvdc = "";
+        if(isset($request->list_id_gvdc) && $request->list_id_gvdc != null) {
+            foreach ($request->list_id_gvdc as $value_listgvdc) {
+                $list_gvdc .= $value_listgvdc."_";
+            }
+            $rs_list_gvdc = rtrim($list_gvdc, '_');
         }
-        $rs_list_gvdc = rtrim($list_gvdc, '_');
-
+        
         $de_cuong->gv_daycung = $rs_list_gvdc;
         $de_cuong->khoaphutrach = $data['khoa_phu_trach'];
         $de_cuong->id_nganh = $data['nganh'];
@@ -252,11 +273,23 @@ class DeCuongChiTietController extends Controller
 
     public function xoa_decuong($id_decuong) {
 
+        $decuong_dghp = DB::table('table_decuongchitiet')->select('id_hocphan')->where('id_decuong', $id_decuong)->first();
+        $id_hocphan = $decuong_dghp->id_hocphan;
+
         $delete_dc = decuongchitiet::find($id_decuong);
         $delete_dc->delete();
 
         $dele_cdr = chuandauramonhoc::find($id_decuong);
         $dele_cdr->delete();
+
+        $deletedghp = danhgiahocphan::find($id_hocphan);
+        $deletedghp->delete();
+
+        $deletetslhp = trongsolophocphan::find($id_hocphan);
+        $deletetslhp->delete();
+
+        $deletekhgd = kehoachgiangday::find($id_hocphan);
+        $deletekhgd->delete();
 
         return Redirect::to('/danh-sach-de-cuong');
 
@@ -271,12 +304,14 @@ class DeCuongChiTietController extends Controller
         ->join('table_nganh', 'table_decuongchitiet.id_nganh', 'table_nganh.id')
         ->where('table_decuongchitiet.id_decuong', $id_decuong)->first();
 
-        $id_gvdc1 = explode("_", $all_decuong->gv_daycung);
         $list_gvdc = [];
 
-        foreach ($id_gvdc1 as $value) {
-            $gv = DB::table('table_giangvien')->where('id', $value)->first();
-            $list_gvdc[] = $gv->hodem." ".$gv->ten;
+        if($all_decuong->gv_daycung != null) {
+            $id_gvdc1 = explode("_", $all_decuong->gv_daycung);
+            foreach ($id_gvdc1 as $value) {
+                $gv = DB::table('table_giangvien')->where('id', $value)->first();
+                $list_gvdc[] = $gv->hodem." ".$gv->ten;
+            }
         }
 
         $all_cdr = DB::table('table_chuandaura_monhoc')->where('id_decuong', $id_decuong)->get();
@@ -286,6 +321,8 @@ class DeCuongChiTietController extends Controller
 
         $all_dghp = DB::table('table_danhgiahocphan')->join('table_thanhphandanhgia', 'table_danhgiahocphan.id_baidanhgia'
         ,'table_thanhphandanhgia.id')->where('table_danhgiahocphan.id_hocphan', $id_hocphan)->get();
+
+        $all_trongso = DB::table('table_trongso_lhp')->where('id_lhp', $id_hocphan)->get();
 
         $all_baidanhgia = array();
 
@@ -348,12 +385,14 @@ class DeCuongChiTietController extends Controller
             $vl_kehoachgiangday_lt->noidung = $this->xem_decuong_khgd($vl_kehoachgiangday_lt->noidung);
             $vl_kehoachgiangday_lt->hoatdongdayhoc = $this->xem_decuong_khgd($vl_kehoachgiangday_lt->hoatdongdayhoc);
             $vl_kehoachgiangday_lt->cdrhocphan = explode("_", $vl_kehoachgiangday_lt->cdrhocphan);
+            $vl_kehoachgiangday_lt->baidanhgia = explode("_", $vl_kehoachgiangday_lt->baidanhgia);
         }
 
         foreach($all_kehoachgiangday_th as $vl_kehoachgiangday_th) {
             $vl_kehoachgiangday_th->noidung = $this->xem_decuong_khgd($vl_kehoachgiangday_th->noidung);
             $vl_kehoachgiangday_th->hoatdongdayhoc = $this->xem_decuong_khgd($vl_kehoachgiangday_th->hoatdongdayhoc);
             $vl_kehoachgiangday_th->cdrhocphan = explode("_", $vl_kehoachgiangday_th->cdrhocphan);
+            $vl_kehoachgiangday_th->baidanhgia = explode("_", $vl_kehoachgiangday_th->baidanhgia);
         }
 
         // echo "<pre>";
@@ -362,7 +401,8 @@ class DeCuongChiTietController extends Controller
 
         return view('pages_2.xem_de_cuong')->with('all_decuong', $all_decuong)->with('list_gvdc', $list_gvdc)
         ->with('all_cdr', $all_cdr)->with('all_dghp', $all_dghp)->with('baidanhgia', $baidanhgia)->with('id_decuong', $id_decuong)
-        ->with('all_kehoachgiangday_lt', $all_kehoachgiangday_lt)->with('all_kehoachgiangday_th', $all_kehoachgiangday_th);
+        ->with('all_kehoachgiangday_lt', $all_kehoachgiangday_lt)->with('all_kehoachgiangday_th', $all_kehoachgiangday_th)
+        ->with('all_trongso', $all_trongso);
     }
 
     public function xem_decuong_khgd($string) {
@@ -1162,6 +1202,88 @@ class DeCuongChiTietController extends Controller
         }
 
         return Redirect::to('/danh-sach-de-cuong');
+    }
+
+    public function mo_ta_ct_dt() {
+
+        $id_nganh = 1;
+
+        $chuandaura = DB::table('table_chuandaura_chung')->where('id_nganh', $id_nganh)->get();
+
+        $all_decuong = DB::table('table_decuongchitiet')
+        ->join('table_hocphan', 'table_hocphan.id', 'table_decuongchitiet.id_hocphan')
+        ->join('table_giangvien', 'table_giangvien.id', 'table_decuongchitiet.giangvienphutrach_id')
+        ->where('table_decuongchitiet.id_nganh', $id_nganh)
+        ->get(); 
+
+        //$all_cdr_child = DB::table('table_chuandaura_monhoc')->where('id_decuong', '17')->get();
+
+        // $all_cdr_child = DB::table('table_chuandaura_monhoc')
+        // ->where('id_decuong', '17')
+        // ->select('id_cdr_chung', DB::raw('count(*) as tong'))
+        // ->groupBy('id_cdr_chung')
+        // ->get();
+
+        foreach($all_decuong as $vl_all_decuong) {
+
+            $all_cdr_child = DB::table('table_chuandaura_monhoc')
+            ->where('id_decuong', $vl_all_decuong->id_decuong)
+            ->select('id_cdr_chung', DB::raw('count(*) as tong'))
+            ->groupBy('id_cdr_chung')
+            ->get();
+
+            //echo "<pre>";
+            //print_r($all_cdr_child);
+            foreach($all_cdr_child as $vl) {
+                $vl_all_decuong->PLO[] = $vl->id_cdr_chung."_".$this->Tunhien2Lama($vl->tong);
+            }
+            
+        }
+
+
+        // echo "<pre>";
+        // print_r($all_decuong);
+        // die();
+
+        return view('pages_2.mo_ta_chuong_trinh_dao_tao')->with('chuandaura', $chuandaura)->with('all_decuong', $all_decuong);
+    }
+
+    function Tunhien2Lama($number)
+    {
+        switch($number)
+        {
+            case 1: return 'I';
+            case 2: return 'II'; 
+            case 3: return 'III';
+            case 4: return 'IV';
+            case 5: return 'V';
+            case 6: return 'VI';
+            case 7: return 'VII';
+            case 8: return 'VIII';
+            case 9: return 'IX';
+            case 10: return 'X';
+            case 11: return 'XI';
+            case 12: return 'XII'; 
+            case 13: return 'XIII'; 
+            case 14: return 'XIV';
+            case 15: return 'XV';
+            case 16: return 'XVI';
+            case 17: return 'XVII';
+            case 18: return 'XVIII';
+            case 19: return 'XIX';
+            case 20: return 'XX';
+            case 21: return 'XXI';
+            case 22: return 'XXII';
+            case 23: return 'XXIII';
+            case 24: return 'XXIV';
+            case 25: return 'XXV';
+            case 26: return 'XXVI';
+            case 27: return 'XXVII';
+            case 28: return 'XXVIII';
+            case 29: return 'XXIX';
+            case 30: return 'XXX';
+            default: return $number;
+        }
     }
 
 
